@@ -18,6 +18,8 @@ This plugin creates a shortcode `[ntherm_utilities]` that renders a React applic
 
 ## Development Setup
 
+To test this locally, its quickest to just ignore Elementor and add the plugin to a barebones WordPress site (not using the shortcode):
+
 1. Clone this repository to your local machine
 2. Install dependencies:
 ```bash
@@ -81,5 +83,6 @@ npm run package-plugin
 
 4. After deployment:
    - Verify the plugin is still activated
+   - Verify that the shortcode is applied
    - Confirm the API key is still set in Settings > Utilities Plugin
    - Test the functionality in Elementor 
