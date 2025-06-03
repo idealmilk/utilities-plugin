@@ -1,4 +1,4 @@
-# Utilities Plugin Frontend
+# Utilities Plugin
 
 A WordPress plugin that provides a React-based utilities interface that works seamlessly with Elementor.
 
