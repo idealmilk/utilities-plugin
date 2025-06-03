@@ -7,21 +7,44 @@ console.log("Waiting for container...")
 
 function mountReactApp() {
   const container = document.getElementById("ntherm-react-root")
-  console.log("container is", container)
-  if (container) {
-    const root = createRoot(container)
-    console.log("Mounting <UtilitiesView />")
-    root.render(<UtilitiesView />)
-    return true
+  if (!container || container.getAttribute('data-react-mounted') === 'true') {
+    return false
   }
-  return false
+
+  try {
+    const root = createRoot(container)
+    root.render(
+      <React.StrictMode>
+        <UtilitiesView />
+      </React.StrictMode>
+    )
+    container.setAttribute('data-react-mounted', 'true')
+    return true
+  } catch (error) {
+    console.error('Error mounting React app:', error)
+    return false
+  }
 }
 
+// Try to mount immediately when script loads
 if (!mountReactApp()) {
-  const observer = new MutationObserver(() => {
+  // If immediate mount fails, observe DOM changes
+  const observer = new MutationObserver((mutations, obs) => {
     if (mountReactApp()) {
-      observer.disconnect()
+      obs.disconnect() // Stop observing once mounted
     }
   })
-  observer.observe(document.body, { childList: true, subtree: true })
+
+  // Start observing the document with the configured parameters
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  })
+}
+
+// Also try mounting when Elementor frontend is initialized
+if (window.elementorFrontend) {
+  window.elementorFrontend.hooks.addAction('frontend/element_ready/global', function() {
+    mountReactApp()
+  })
 }

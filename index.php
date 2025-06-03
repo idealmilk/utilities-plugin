@@ -15,7 +15,11 @@ function utilitiespluginregister() {
 add_action( 'init', 'utilitiespluginregister' );
 
 function ntherm_utilities_shortcode() {
-  return '<div id="ntherm-react-root">React Root Placeholder</div>';
+  // Ensure scripts are enqueued when shortcode is used
+  wp_enqueue_script('ntherm-frontend');
+  wp_enqueue_style('ntherm-style');
+  
+  return '<div id="ntherm-react-root" data-react-mounted="false">React Root Placeholder</div>';
 }
 add_shortcode('ntherm_utilities', 'ntherm_utilities_shortcode');
 
@@ -25,7 +29,7 @@ function ntherm_enqueue_frontend_assets() {
   wp_enqueue_script(
       'ntherm-frontend',
       plugins_url('build/frontend.js', __FILE__),
-      [ 'wp-element' ], // Important to have wp-element for React
+      ['wp-element', 'wp-components', 'wp-i18n'], // Add more WordPress dependencies
       filemtime(plugin_dir_path(__FILE__) . 'build/frontend.js'),
       true // Load in footer
   );
