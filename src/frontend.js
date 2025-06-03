@@ -1,6 +1,8 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
+
 import UtilitiesView from "./views/utilities"
+
 import "./style.css"
 
 console.log("Waiting for container...")
@@ -15,7 +17,9 @@ function mountReactApp() {
     const root = createRoot(container)
     root.render(
       <React.StrictMode>
+        <div className="my-unique-plugin-wrapper-class">
         <UtilitiesView />
+        </div>
       </React.StrictMode>
     )
     container.setAttribute('data-react-mounted', 'true')
@@ -48,3 +52,30 @@ if (window.elementorFrontend) {
     mountReactApp()
   })
 }
+
+// Find all divs that need to be hydrated
+const divsToUpdate = document.querySelectorAll(".tailwind-update-me")
+
+// Hydrate each div with React
+divsToUpdate.forEach(div => {
+  // Even if there's no data in pre tag, we'll still render the component
+  let data = {}
+  try {
+    const preTag = div.querySelector("pre")
+    if (preTag) {
+      data = JSON.parse(preTag.innerText)
+    }
+  } catch (e) {
+    console.error("Error parsing data:", e)
+  }
+
+  const root = createRoot(div)
+  root.render(
+    <React.StrictMode>
+      <div className="my-unique-plugin-wrapper-class">
+        <UtilitiesView {...data} />
+      </div>
+    </React.StrictMode>
+  )
+  div.classList.remove("tailwind-update-me")
+})
